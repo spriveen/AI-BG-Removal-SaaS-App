@@ -1,4 +1,5 @@
-import {Webhook, webhook} from 'svix'
+import {Webhook} from 'svix'
+import userModel from '../models/userModel.js'
 
 //  API Controller Function to kanage clerk User With Database
 // http://localhost:4000/user/webhooks
@@ -33,16 +34,36 @@ const clerkwebhooks = async (req, res) =>{
             res.json({})
 
          break;
+              
+
+         
+         
 
         }
 
          case "user.updated":{
+
+            const userData ={
+               email: data.email_addresses[0].email_address,
+               firstName: data.first_Name,
+               lastName: data.last_Name,
+               photo: data.image_url
+
+            }
+
+            await userModel.findOneAndUpdate({clerkId:data.id},userData)
+            res.json({})
 
          break;
 
         }
 
          case "user.deleted":{
+
+
+            await  userModel.findOneAndDelete({clerkId:data.id})
+            res.json({})
+
 
          break;
 
@@ -62,4 +83,6 @@ const clerkwebhooks = async (req, res) =>{
    }
 
 }
+
+export {clerkwebhooks}
 
